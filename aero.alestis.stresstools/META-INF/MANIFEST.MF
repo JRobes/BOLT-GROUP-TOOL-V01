@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Stresstools
+Bundle-SymbolicName: aero.alestis.stresstools
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: aero.alestis.stresstools.boltgroup,
+ aero.alestis.stresstools.general
