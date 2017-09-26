@@ -84,6 +84,8 @@ public class BoltGroupExcelParser {
 			
 		file.close();
 		
+		
+		
 		analysis.setFastenerGeometry(fastenerList);		
 	}
 
