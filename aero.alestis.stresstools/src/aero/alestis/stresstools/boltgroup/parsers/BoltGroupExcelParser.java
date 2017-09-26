@@ -46,14 +46,23 @@ public class BoltGroupExcelParser {
 		GeneralPoint point = new GeneralPoint();
 		Fastener fastener = new Fastener();
 		List<Fastener> fastenerList =new ArrayList<Fastener>();
+		
+		
+		
+		
 		while(rowIterator.hasNext()) {
 			Row row = rowIterator.next();			
 			
-			if (row.getCell(0).getCellType() == Cell.CELL_TYPE_STRING && 
+			if (    row.getCell(0).getCellType() == Cell.CELL_TYPE_STRING && 
 					row.getCell(1).getCellType() == Cell.CELL_TYPE_NUMERIC && 
 					row.getCell(2).getCellType() == Cell.CELL_TYPE_NUMERIC &&
 					row.getCell(3).getCellType() == Cell.CELL_TYPE_NUMERIC &&
-					row.getCell(4).getCellType() == Cell.CELL_TYPE_STRING) {
+					row.getCell(4).getCellType() == Cell.CELL_TYPE_NUMERIC && 
+					row.getCell(5).getCellType() == Cell.CELL_TYPE_NUMERIC &&
+					row.getCell(6).getCellType() == Cell.CELL_TYPE_NUMERIC &&
+					row.getCell(7).getCellType() == Cell.CELL_TYPE_NUMERIC && 
+					row.getCell(8).getCellType() == Cell.CELL_TYPE_NUMERIC &&
+					row.getCell(9).getCellType() == Cell.CELL_TYPE_NUMERIC) {
 				
 				System.out.println(row.getCell(0).getStringCellValue());
 				//point.setPointID("ddddd");

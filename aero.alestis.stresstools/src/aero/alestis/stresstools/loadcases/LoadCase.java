@@ -5,16 +5,16 @@ import java.util.List;
 
 public class LoadCase {
 	private String LoadCaseID;
-	private List<Load> loadCaseList = new ArrayList<Load>();
+	private List<Load> loadList = new ArrayList<Load>();
 
 	public void add(Load load) {
-		this.loadCaseList.add(load);
+		this.loadList.add(load);
 	}
 	public void remove(Load load) {
-		this.loadCaseList.remove(load);
+		this.loadList.remove(load);
 	}
 	public void clear() {
-		this.loadCaseList.clear();
+		this.loadList.clear();
 	}
 	
 	
