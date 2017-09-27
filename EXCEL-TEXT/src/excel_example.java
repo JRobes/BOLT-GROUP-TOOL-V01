@@ -6,7 +6,7 @@ import aero.alestis.stresstools.boltgroup.parsers.BoltGroupExcelParser;
 
 public class excel_example {
 	private static BoltGroupAnalysis analysis = new BoltGroupAnalysis();
-	private static String EXCEL_FILE = System.getProperty("user.dir")+"\\J-BOLT-GROUP-V01.xls";
+	private static String EXCEL_FILE = System.getProperty("user.dir")+"/J-BOLT-GROUP-V01.xls";
 	//private static String EXCEL_FILE = "C:\\Users\\javier.robes\\Desktop\\TASKS\\52_BOLT-GROUP-TOOL\\Documentos\\J-BOLT-GROUP-V01.xls";
 	private static BoltGroupExcelParser parser;
 	public static void main(String[] args) throws IOException {

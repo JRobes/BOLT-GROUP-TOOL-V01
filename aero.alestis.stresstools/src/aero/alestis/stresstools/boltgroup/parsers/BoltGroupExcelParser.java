@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
 import aero.alestis.stresstools.boltgroup.BoltGroupAnalysis;
+import aero.alestis.stresstools.boltgroup.BoltGroupLoadCase;
 import aero.alestis.stresstools.general.Fastener;
 import aero.alestis.stresstools.general.GeneralPoint;
 
@@ -44,6 +45,7 @@ public class BoltGroupExcelParser {
 		Iterator<Row> rowIterator = sheet.iterator();
 		rowIterator.next();
 		GeneralPoint point = new GeneralPoint();
+		BoltGroupLoadCase bglc = new BoltGroupLoadCase();
 		Fastener fastener = new Fastener();
 		List<Fastener> fastenerList =new ArrayList<Fastener>();
 		
@@ -70,6 +72,7 @@ public class BoltGroupExcelParser {
 				point.setPunto(new Vector3D(row.getCell(1).getNumericCellValue(),
 						                    row.getCell(2).getNumericCellValue(),
 						                    row.getCell(3).getNumericCellValue()));
+				
 				fastener.setFastenerLocation(point);
 				fastener.setFastenerID(row.getCell(4).getStringCellValue());
 				
