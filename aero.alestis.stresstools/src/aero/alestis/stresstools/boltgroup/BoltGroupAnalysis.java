@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import aero.alestis.stresstools.general.Fastener;
+import aero.alestis.stresstools.loadcases.PuntualForce;
 import aero.alestis.stresstools.materials.IFastenerMaterial;
 
 public class BoltGroupAnalysis {
@@ -15,8 +16,8 @@ public class BoltGroupAnalysis {
 		return bgLoadCases;
 	}
 
-	public void setBgLoadCases(List<BoltGroupLoadCase> bgLoadCases) {
-		this.bgLoadCases = bgLoadCases;
+	public void setBgLoadCases(List<BoltGroupLoadCase> listOfLoadCases) {
+		this.bgLoadCases = listOfLoadCases;
 	}
 
 	public List<Fastener> getFastenerGeometry() {

@@ -19,6 +19,8 @@ import aero.alestis.stresstools.boltgroup.BoltGroupAnalysis;
 import aero.alestis.stresstools.boltgroup.BoltGroupLoadCase;
 import aero.alestis.stresstools.general.Fastener;
 import aero.alestis.stresstools.general.GeneralPoint;
+import aero.alestis.stresstools.loadcases.PuntualForce;
+import aero.alestis.stresstools.loadcases.PuntualLoad;
 import aero.alestis.stresstools.materials.FastenerMaterial;
 import aero.alestis.stresstools.materials.IFastenerMaterial;
 
@@ -37,6 +39,7 @@ public class BoltGroupExcelParser {
 
 		parseBoltGeometry(workbook, analysis);
 		parseMaterials(workbook, analysis);
+		parseLoadCases(workbook, analysis);
 		//parseBoltMaterial()
 		//parseLoadCases(workbook, analysis);
 		file.close();
@@ -75,15 +78,18 @@ public class BoltGroupExcelParser {
 		analysis.setMaterialsMap(materialsFromExcel);
 	}
 
-	@SuppressWarnings("unused")
 	private void parseLoadCases(HSSFWorkbook workbook, BoltGroupAnalysis analysis)  throws IOException{
 		HSSFSheet sheet = workbook.getSheet("LOAD-CASES");
 		Iterator<Row> rowIterator = sheet.iterator();
 		rowIterator.next();
+		PuntualForce loadcase;
+		//List<PuntualForce> listOfForces = new ArrayList<PuntualForce>();
+		List<BoltGroupLoadCase> listOfLoadCases = new ArrayList<BoltGroupLoadCase>();
+		BoltGroupLoadCase bglc;
 		GeneralPoint point = new GeneralPoint();
-		BoltGroupLoadCase bglc = new BoltGroupLoadCase();
-		Fastener fastener = new Fastener();
-		List<Fastener> fastenerList =new ArrayList<Fastener>();
+		//BoltGroupLoadCase bglc = new BoltGroupLoadCase();
+
+		
 		
 		while(rowIterator.hasNext()) {
 			Row row = rowIterator.next();			
@@ -99,17 +105,23 @@ public class BoltGroupExcelParser {
 					row.getCell(8).getCellType() == Cell.CELL_TYPE_NUMERIC &&
 					row.getCell(9).getCellType() == Cell.CELL_TYPE_NUMERIC) {
 				
-				System.out.println(row.getCell(0).getStringCellValue());
-				//point.setPointID("ddddd");
-				//point.setPointID(row.getCell(0).getStringCellValue());
-				point.setPunto(new Vector3D(row.getCell(1).getNumericCellValue(),
-						                    row.getCell(2).getNumericCellValue(),
-						                    row.getCell(3).getNumericCellValue()));
+				point.setPunto(new Vector3D(row.getCell(1).getNumericCellValue(), 
+											row.getCell(2).getNumericCellValue(), 
+											row.getCell(3).getNumericCellValue()));
 				
-				fastener.setFastenerLocation(point);
-				//fastener.setFastenerID(row.getCell(4).getStringCellValue());
 				
-				fastenerList.add(fastener);
+				bglc = new BoltGroupLoadCase(row.getCell(0).getStringCellValue(),
+						point ,new PuntualForce(null, row.getCell(4).getNumericCellValue(),
+								                      row.getCell(5).getNumericCellValue(),
+								                      row.getCell(6).getNumericCellValue(),
+								                      row.getCell(7).getNumericCellValue(),
+								                      row.getCell(8).getNumericCellValue(),
+								                      row.getCell(9).getNumericCellValue()));
+				
+				
+				
+				System.out.println(row.getCell(0).getStringCellValue()+"\tLoad Caseeeee...");
+	
 				
 			}
 			else {
@@ -122,7 +134,7 @@ public class BoltGroupExcelParser {
 		
 		
 		
-		analysis.setFastenerGeometry(fastenerList);		
+		analysis.setBgLoadCases(listOfLoadCases);		
 	}
 
 	private void parseBoltGeometry(HSSFWorkbook workbook, BoltGroupAnalysis analysis) throws IOException {

@@ -3,6 +3,8 @@ package aero.alestis.stresstools.loadcases;
 import aero.alestis.stresstools.general.GeneralPoint;
 
 public class PuntualLoad extends Load {
+	
+	private String LoadCaseID;
 	private GeneralPoint loadApplicationPoint;
 	private PuntualForce puntualForce;
 	
@@ -10,7 +12,7 @@ public class PuntualLoad extends Load {
 	public int getLoadType() {
 		return LoadType.PUNTUAL_LOAD;
 	}
-
+    
 	public GeneralPoint getLoadApplicationPoint() {
 		return loadApplicationPoint;
 	}
@@ -25,6 +27,14 @@ public class PuntualLoad extends Load {
 
 	public void setPuntualForce(PuntualForce puntualForce) {
 		this.puntualForce = puntualForce;
+	}
+
+	public String getLoadCaseID() {
+		return LoadCaseID;
+	}
+
+	public void setLoadCaseID(String loadCaseID) {
+		LoadCaseID = loadCaseID;
 	}
 
 }
