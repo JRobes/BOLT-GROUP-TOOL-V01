@@ -36,7 +36,6 @@ public class BoltGroupExcelParser {
 		file = new FileInputStream(new File(path));
 		HSSFWorkbook workbook = null;
 		workbook = new HSSFWorkbook(file);
-
 		parseBoltGeometry(workbook, analysis);
 		parseMaterials(workbook, analysis);
 		parseLoadCases(workbook, analysis);
@@ -140,11 +139,11 @@ public class BoltGroupExcelParser {
 	private void parseBoltGeometry(HSSFWorkbook workbook, BoltGroupAnalysis analysis) throws IOException {
 		HSSFSheet sheet = workbook.getSheet("GEOMETRY");
 		Iterator<Row> rowIterator = sheet.iterator();
-		rowIterator.next();
-		GeneralPoint point = new GeneralPoint();
-		Fastener fastener = new Fastener();
+		rowIterator.next(); 
 		List<Fastener> fastenerList =new ArrayList<Fastener>();
 		while(rowIterator.hasNext()) {
+			GeneralPoint point = new GeneralPoint();
+			Fastener fastener = new Fastener();
 			Row row = rowIterator.next();			
 			
 			if (row.getCell(0).getCellType() == Cell.CELL_TYPE_STRING && 
@@ -164,7 +163,7 @@ public class BoltGroupExcelParser {
 				
 				fastener.setFastenerLocation(point);
 				fastener.setFastenerType(row.getCell(4).getStringCellValue());
-				
+				System.out.println("PUNTO.."+point.getPunto());
 				fastenerList.add(fastener);
 				
 			}
@@ -175,6 +174,11 @@ public class BoltGroupExcelParser {
 		}
 			
 		//file.close();
+		for(int i = 0 ; i < fastenerList.size(); i++) {
+			System.out.println("AL pricipio...");
+    	    System.out.println(fastenerList.get(i).getFastenerLocation().getPunto());
+
+		}
 		
 		analysis.setFastenerGeometry(fastenerList);
 	}
