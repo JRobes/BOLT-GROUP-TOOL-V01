@@ -19,6 +19,7 @@ public class excel_example {
 		
 		try {
 			Plane plano = analysis.getFittingPlane();
+			
 		} catch (BoltGroupPlaneException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

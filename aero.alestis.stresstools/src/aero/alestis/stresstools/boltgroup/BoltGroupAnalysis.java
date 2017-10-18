@@ -9,6 +9,7 @@ import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 
 import aero.alestis.stresstools.general.Fastener;
 import aero.alestis.stresstools.materials.IFastenerMaterial;
@@ -43,6 +44,14 @@ public class BoltGroupAnalysis {
 	public void setMaterialsMap(Map<String, IFastenerMaterial> materialsMap) {
 		this.materialsMap = materialsMap;
 	}
+	public Vector3D getReferencePoint() {
+		return referencePoint;
+	
+	}
+
+	public void setReferencePoint(Vector3D referencePoint) {
+		this.referencePoint = referencePoint;
+	}
 
     public Plane getFittingPlane() throws BoltGroupPlaneException{
     	
@@ -55,11 +64,36 @@ public class BoltGroupAnalysis {
     }
     
     public void createBaseChangeMatrix() {
-    	double[][] arrayParaMatriz = {boltsPlane.getNormal().toArray(), boltsPlane.getU().toArray(), boltsPlane.getV().toArray()};
+    	double[][] arrayParaMatriz = {boltsPlane.getU().toArray(), boltsPlane.getV().toArray(),boltsPlane.getNormal().toArray()};
     	RealMatrix laMatriz = MatrixUtils.createRealMatrix(arrayParaMatriz);
-    	laMatriz.transpose();
+    	//laMatriz.transpose();
+
         System.out.println("LA MATRIZ DE CAMBIO DE BASE ES ==============\t"+ laMatriz);
-           	
+    	//laMatriz.operate();
+    	double [] vector = {
+    			getFastenerGeometry().get(0).getFastenerLocation().getPunto().getX(),
+    			getFastenerGeometry().get(0).getFastenerLocation().getPunto().getY(),
+    			getFastenerGeometry().get(0).getFastenerLocation().getPunto().getZ()};
+    	double[] rv = laMatriz.operate(vector);
+    	System.out.println(rv[0]);
+    	System.out.println(rv[1]);
+    	System.out.println(rv[2]);
+    	double [] vector1 = {
+    			getFastenerGeometry().get(1).getFastenerLocation().getPunto().getX(),
+    			getFastenerGeometry().get(1).getFastenerLocation().getPunto().getY(),
+    			getFastenerGeometry().get(1).getFastenerLocation().getPunto().getZ()};
+    	double[] rv1 = laMatriz.operate(vector1);
+    	System.out.println(rv1[0]);
+    	System.out.println(rv1[1]);
+    	System.out.println(rv1[2]);
+    	double [] vector2 = {
+    			getFastenerGeometry().get(2).getFastenerLocation().getPunto().getX(),
+    			getFastenerGeometry().get(2).getFastenerLocation().getPunto().getY(),
+    			getFastenerGeometry().get(2).getFastenerLocation().getPunto().getZ()};
+    	double[] rv2 = laMatriz.operate(vector2);
+    	System.out.println(rv2[0]);
+    	System.out.println(rv2[1]);
+    	System.out.println(rv2[2]);
     }
     
     
@@ -114,5 +148,7 @@ public class BoltGroupAnalysis {
         
 		return new Plane(listOfFasteners.get(0).getFastenerLocation().getPunto(), listOfFasteners.get(1).getFastenerLocation().getPunto(), listOfFasteners.get(2).getFastenerLocation().getPunto(),0.001);
 	}
+
+
 	
 }
