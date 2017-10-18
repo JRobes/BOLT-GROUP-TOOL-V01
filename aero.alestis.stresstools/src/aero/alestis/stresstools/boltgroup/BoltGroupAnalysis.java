@@ -7,13 +7,18 @@ import org.apache.commons.math3.geometry.euclidean.threed.Plane;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.LUDecomposition;
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
+
 import aero.alestis.stresstools.general.Fastener;
 import aero.alestis.stresstools.materials.IFastenerMaterial;
 
 public class BoltGroupAnalysis {
+	private Plane boltsPlane;
 	private List<BoltGroupLoadCase> bgLoadCases;
 	private List<Fastener> fastenerGeometry;
 	private Map<String, IFastenerMaterial> materialsMap;
+	private Vector3D referencePoint;
 	
 	public List<BoltGroupLoadCase> getBgLoadCases() {
 		return bgLoadCases;
@@ -42,11 +47,22 @@ public class BoltGroupAnalysis {
     public Plane getFittingPlane() throws BoltGroupPlaneException{
     	
     	if(fastenerGeometry.size() < 3) throw new BoltGroupPlaneException("Numero de remaches menor de 3");
-    	Plane plane = calculatePlane(fastenerGeometry);
-        if(plane==null) throw new BoltGroupPlaneException("No ha sido capaz de encontrar un plano entre todos los puntos...");
-        System.out.println("EL PLANO\t"+ plane.getNormal().toString());
-    	return plane;
+    	boltsPlane = calculatePlane(fastenerGeometry);
+        if(boltsPlane==null) throw new BoltGroupPlaneException("No ha sido capaz de encontrar un plano entre todos los puntos...");
+        System.out.println("EL PLANO\t"+ boltsPlane.getNormal().toString());
+        createBaseChangeMatrix();
+    	return boltsPlane;
     }
+    
+    public void createBaseChangeMatrix() {
+    	double[][] arrayParaMatriz = {boltsPlane.getNormal().toArray(), boltsPlane.getU().toArray(), boltsPlane.getV().toArray()};
+    	RealMatrix laMatriz = MatrixUtils.createRealMatrix(arrayParaMatriz);
+    	laMatriz.transpose();
+        System.out.println("LA MATRIZ DE CAMBIO DE BASE ES ==============\t"+ laMatriz);
+           	
+    }
+    
+    
 
 	private static Plane calculatePlane(List<Fastener> listOfFasteners) throws BoltGroupPlaneException{
 		double TOLERANCIA_PLANO = 1;
