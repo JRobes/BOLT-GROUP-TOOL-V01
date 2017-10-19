@@ -154,15 +154,19 @@ public class BoltGroupAnalysis {
 	public void analyze() {
 		System.out.println("NUMERO DE CASOS DE CARGA:\t" +bgLoadCases.size());
 		for(BoltGroupLoadCase lc :bgLoadCases) {
-			 
-			setReferencePoint(lc);
+			BoltGroupResult bgresult = new BoltGroupResult();
+			setReferencePoint(lc, bgresult);
+			setReferenceFasteners(lc, bgresult);
 		}
 		
 	}
 	
 	
-	public void setReferencePoint(BoltGroupLoadCase lc) {
-		BoltGroupResult bgresult = new BoltGroupResult();
+	private void setReferenceFasteners(BoltGroupLoadCase lc, BoltGroupResult bgresult) {
+		
+	}
+
+	private void setReferencePoint(BoltGroupLoadCase lc, BoltGroupResult bgresult) {
 		bgresult.setReferencePoint(boltsPlane.project((Point)lc.getLoadCasePoint().getPunto()));
 		System.out.println("EL PUNTO SOBREE EL PLANO:\t" +bgresult.getReferencePoint().toString());
 	}

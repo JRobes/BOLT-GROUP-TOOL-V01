@@ -1,12 +1,18 @@
 package aero.alestis.stresstools.boltgroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.math3.geometry.Point;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+
+import aero.alestis.stresstools.general.Fastener;
 
 public class BoltGroupResult {
 	private String loadCaseID;
 	private Vector3D aplicationPoint;
 	private Point referencePoint;
+	private List<Fastener> referenceFasteners = new ArrayList<Fastener>();
 	public String getLoadCaseID() {
 		return loadCaseID;
 	}

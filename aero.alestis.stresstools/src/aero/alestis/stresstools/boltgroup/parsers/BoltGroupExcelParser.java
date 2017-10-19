@@ -119,7 +119,7 @@ public class BoltGroupExcelParser {
 				
 				System.out.println(row.getCell(0).getStringCellValue()+"\tLoad Caseeeee...");
 	
-				
+				listOfLoadCases.add(bglc);
 			}
 			else {
 				
