@@ -8,6 +8,7 @@ public class BoltGroupLoadCase extends LoadCase {
 	private String bgLoadCaseID;
 	private GeneralPoint loadCasePoint;
 	private PuntualForce loadCaseForce;
+	private BoltGroupResult bgResult;
 	public BoltGroupLoadCase(String BGLoadCaseID, GeneralPoint loadCasePoint, PuntualForce loadCaseForce) {
 		this.setBgLoadCaseID(BGLoadCaseID);
 		this.setLoadCasePoint(loadCasePoint);

@@ -43,8 +43,6 @@ public class BoltGroupExcelParser {
 		//parseLoadCases(workbook, analysis);
 		file.close();
 	}
-	
-
 
 	private void parseMaterials(HSSFWorkbook workbook, BoltGroupAnalysis analysis) {
 		HSSFSheet sheet = workbook.getSheet("FASTENER_TYPES");

@@ -28,7 +28,7 @@ public class excel_example {
 		System.out.println(analysis.getFastenerGeometry().size());
 		
 		System.out.println(System.getProperty("user.dir"));
-		
+		analysis.analyze();
 		
 	}
 

@@ -3,6 +3,8 @@ package aero.alestis.stresstools.boltgroup;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.math3.geometry.Point;
 import org.apache.commons.math3.geometry.euclidean.threed.Plane;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
@@ -20,6 +22,7 @@ public class BoltGroupAnalysis {
 	private List<Fastener> fastenerGeometry;
 	private Map<String, IFastenerMaterial> materialsMap;
 	private Vector3D referencePoint;
+	private List<BoltGroupResult> bgResults;
 	
 	public List<BoltGroupLoadCase> getBgLoadCases() {
 		return bgLoadCases;
@@ -148,7 +151,27 @@ public class BoltGroupAnalysis {
         
 		return new Plane(listOfFasteners.get(0).getFastenerLocation().getPunto(), listOfFasteners.get(1).getFastenerLocation().getPunto(), listOfFasteners.get(2).getFastenerLocation().getPunto(),0.001);
 	}
+	public void analyze() {
+		System.out.println("NUMERO DE CASOS DE CARGA:\t" +bgLoadCases.size());
+		for(BoltGroupLoadCase lc :bgLoadCases) {
+			 
+			setReferencePoint(lc);
+		}
+		
+	}
+	
+	
+	public void setReferencePoint(BoltGroupLoadCase lc) {
+		BoltGroupResult bgresult = new BoltGroupResult();
+		bgresult.setReferencePoint(boltsPlane.project((Point)lc.getLoadCasePoint().getPunto()));
+		System.out.println("EL PUNTO SOBREE EL PLANO:\t" +bgresult.getReferencePoint().toString());
+	}
 
 
 	
 }
+
+
+
+
+
