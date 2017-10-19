@@ -15,8 +15,6 @@ public class excel_example {
 	public static void main(String[] args) throws IOException {
 	    parser = new BoltGroupExcelParser(EXCEL_FILE);
 		parser.parse(analysis);
-		
-		
 		try {
 			Plane plano = analysis.getFittingPlane();
 			

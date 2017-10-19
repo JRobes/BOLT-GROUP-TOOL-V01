@@ -21,8 +21,9 @@ public class BoltGroupAnalysis {
 	private List<BoltGroupLoadCase> bgLoadCases;
 	private List<Fastener> fastenerGeometry;
 	private Map<String, IFastenerMaterial> materialsMap;
-	private Vector3D referencePoint;
+	private Vector3D referencePoint;//esto cambiarlo para cada bgresult
 	private List<BoltGroupResult> bgResults;
+	private RealMatrix changeOfBasisMatrix;
 	
 	public List<BoltGroupLoadCase> getBgLoadCases() {
 		return bgLoadCases;
@@ -68,11 +69,13 @@ public class BoltGroupAnalysis {
     
     public void createBaseChangeMatrix() {
     	double[][] arrayParaMatriz = {boltsPlane.getU().toArray(), boltsPlane.getV().toArray(),boltsPlane.getNormal().toArray()};
-    	RealMatrix laMatriz = MatrixUtils.createRealMatrix(arrayParaMatriz);
+    	//RealMatrix laMatriz = MatrixUtils.createRealMatrix(arrayParaMatriz);
+    	this.setChangeOfBasisMatrix(MatrixUtils.createRealMatrix(arrayParaMatriz));
     	//laMatriz.transpose();
 
-        System.out.println("LA MATRIZ DE CAMBIO DE BASE ES ==============\t"+ laMatriz);
-    	//laMatriz.operate();
+        System.out.println("LA MATRIZ DE CAMBIO DE BASE ES ==============\t"+ this.getChangeOfBasisMatrix());
+    	/*
+        //laMatriz.operate();
     	double [] vector = {
     			getFastenerGeometry().get(0).getFastenerLocation().getPunto().getX(),
     			getFastenerGeometry().get(0).getFastenerLocation().getPunto().getY(),
@@ -97,6 +100,8 @@ public class BoltGroupAnalysis {
     	System.out.println(rv2[0]);
     	System.out.println(rv2[1]);
     	System.out.println(rv2[2]);
+    	
+    	*/
     }
     
     
@@ -154,7 +159,7 @@ public class BoltGroupAnalysis {
 	public void analyze() {
 		System.out.println("NUMERO DE CASOS DE CARGA:\t" +bgLoadCases.size());
 		for(BoltGroupLoadCase lc :bgLoadCases) {
-			BoltGroupResult bgresult = new BoltGroupResult();
+			BoltGroupResult bgresult = new BoltGroupResult(lc.getBgLoadCaseID());
 			setReferencePoint(lc, bgresult);
 			setReferenceFasteners(lc, bgresult);
 		}
@@ -169,6 +174,14 @@ public class BoltGroupAnalysis {
 	private void setReferencePoint(BoltGroupLoadCase lc, BoltGroupResult bgresult) {
 		bgresult.setReferencePoint(boltsPlane.project((Point)lc.getLoadCasePoint().getPunto()));
 		System.out.println("EL PUNTO SOBREE EL PLANO:\t" +bgresult.getReferencePoint().toString());
+	}
+
+	public RealMatrix getChangeOfBasisMatrix() {
+		return changeOfBasisMatrix;
+	}
+
+	public void setChangeOfBasisMatrix(RealMatrix changeOfBasisMatrix) {
+		this.changeOfBasisMatrix = changeOfBasisMatrix;
 	}
 
 

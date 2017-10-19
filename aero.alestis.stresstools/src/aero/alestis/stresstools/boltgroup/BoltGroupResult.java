@@ -13,11 +13,12 @@ public class BoltGroupResult {
 	private Vector3D aplicationPoint;
 	private Point referencePoint;
 	private List<Fastener> referenceFasteners = new ArrayList<Fastener>();
+	
+	public BoltGroupResult(String loadCaseID) {
+		this.loadCaseID = loadCaseID;
+	}
 	public String getLoadCaseID() {
 		return loadCaseID;
-	}
-	public void setLoadCaseID(String loadCaseID) {
-		this.loadCaseID = loadCaseID;
 	}
 	public Vector3D getAplicationPoint() {
 		return aplicationPoint;
