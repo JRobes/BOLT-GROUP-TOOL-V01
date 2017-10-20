@@ -171,8 +171,10 @@ public class BoltGroupAnalysis {
 			Fastener newFastenLocation = new Fastener();
 			fastener.getFastenerLocation().getPunto().subtract(referencePoint);
 			RealMatrix inversa = MatrixUtils.inverse(getChangeOfBasisMatrix());
-			//inversa.operate((RealVector)fastener.getFastenerLocation().getPunto().subtract(referencePoint));
+			RealVector rv = inversa.operate(
+					MatrixUtils.createRealVector(fastener.getFastenerLocation().getPunto().subtract(referencePoint).toArray()));
 			
+			System.out.println(rv.toString());
 		}
 		
 	}
@@ -180,6 +182,7 @@ public class BoltGroupAnalysis {
 	private void setReferencePoint(BoltGroupLoadCase lc, BoltGroupResult bgresult) {
 		bgresult.setReferencePoint(boltsPlane.project((Point)lc.getLoadCasePoint().getPunto()));
 		System.out.println("EL PUNTO SOBREE EL PLANO:\t" +bgresult.getReferencePoint().toString());
+		
 	}
 
 	public RealMatrix getChangeOfBasisMatrix() {
