@@ -32,6 +32,13 @@ public class BoltGroupLoadCase extends LoadCase {
 	public void setLoadCaseForce(PuntualForce loadCaseLoad) {
 		this.loadCaseForce = loadCaseLoad;
 	}
+	public BoltGroupResult getBgResult() {
+		if(bgResult == null) return new BoltGroupResult(bgLoadCaseID);
+		return bgResult;
+	}
+	public void setBgResult(BoltGroupResult bgResult) {
+		this.bgResult = bgResult;
+	}
 	
 	
 }

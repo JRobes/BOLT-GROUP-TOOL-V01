@@ -1,5 +1,6 @@
 package aero.alestis.stresstools.boltgroup;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -159,15 +160,20 @@ public class BoltGroupAnalysis {
 	public void analyze() {
 		System.out.println("NUMERO DE CASOS DE CARGA:\t" +bgLoadCases.size());
 		for(BoltGroupLoadCase lc :bgLoadCases) {
-			BoltGroupResult bgresult = new BoltGroupResult(lc.getBgLoadCaseID());
-			setReferencePoint(lc, bgresult);
-			setReferenceFasteners(lc, bgresult);
+			setReferencePoint(lc, lc.getBgResult());
+			setReferenceFasteners(lc, lc.getBgResult());
 		}
-		
 	}
 	
-	
 	private void setReferenceFasteners(BoltGroupLoadCase lc, BoltGroupResult bgresult) {
+		List<Fastener> referenceFastenerList = new ArrayList<Fastener>();
+		for( Fastener fastener: this.getFastenerGeometry() ) {
+			Fastener newFastenLocation = new Fastener();
+			fastener.getFastenerLocation().getPunto().subtract(referencePoint);
+			RealMatrix inversa = MatrixUtils.inverse(getChangeOfBasisMatrix());
+			//inversa.operate((RealVector)fastener.getFastenerLocation().getPunto().subtract(referencePoint));
+			
+		}
 		
 	}
 
