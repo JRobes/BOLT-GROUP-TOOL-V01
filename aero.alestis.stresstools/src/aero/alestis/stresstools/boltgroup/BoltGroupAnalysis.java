@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.math3.geometry.Point;
+import org.apache.commons.math3.geometry.euclidean.threed.Euclidean3D;
 import org.apache.commons.math3.geometry.euclidean.threed.Plane;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
@@ -22,7 +22,7 @@ public class BoltGroupAnalysis {
 	private List<BoltGroupLoadCase> bgLoadCases;
 	private List<Fastener> fastenerGeometry;
 	private Map<String, IFastenerMaterial> materialsMap;
-	private Vector3D referencePoint;//esto cambiarlo para cada bgresult
+	//private Vector3D referencePoint;//esto cambiarlo para cada bgresult
 	private List<BoltGroupResult> bgResults;
 	private RealMatrix changeOfBasisMatrix;
 	
@@ -49,14 +49,7 @@ public class BoltGroupAnalysis {
 	public void setMaterialsMap(Map<String, IFastenerMaterial> materialsMap) {
 		this.materialsMap = materialsMap;
 	}
-	public Vector3D getReferencePoint() {
-		return referencePoint;
 	
-	}
-
-	public void setReferencePoint(Vector3D referencePoint) {
-		this.referencePoint = referencePoint;
-	}
 
     public Plane getFittingPlane() throws BoltGroupPlaneException{
     	
@@ -69,7 +62,7 @@ public class BoltGroupAnalysis {
     }
     
     public void createBaseChangeMatrix() {
-    	double[][] arrayParaMatriz = {boltsPlane.getU().toArray(), boltsPlane.getV().toArray(),boltsPlane.getNormal().toArray()};
+    	double[][] arrayParaMatriz = {boltsPlane.getNormal().toArray(),boltsPlane.getU().toArray(), boltsPlane.getV().toArray()};
     	//RealMatrix laMatriz = MatrixUtils.createRealMatrix(arrayParaMatriz);
     	this.setChangeOfBasisMatrix(MatrixUtils.createRealMatrix(arrayParaMatriz));
     	//laMatriz.transpose();
@@ -160,29 +153,26 @@ public class BoltGroupAnalysis {
 	public void analyze() {
 		System.out.println("NUMERO DE CASOS DE CARGA:\t" +bgLoadCases.size());
 		for(BoltGroupLoadCase lc :bgLoadCases) {
-			setReferencePoint(lc, lc.getBgResult());
-			setReferenceFasteners(lc, lc.getBgResult());
+			setReferencePoint(lc);
+			setReferenceFasteners(lc);
 		}
 	}
 	
-	private void setReferenceFasteners(BoltGroupLoadCase lc, BoltGroupResult bgresult) {
+	private void setReferenceFasteners(BoltGroupLoadCase lc) {
 		List<Fastener> referenceFastenerList = new ArrayList<Fastener>();
 		for( Fastener fastener: this.getFastenerGeometry() ) {
-			Fastener newFastenLocation = new Fastener();
-			fastener.getFastenerLocation().getPunto().subtract(referencePoint);
 			RealMatrix inversa = MatrixUtils.inverse(getChangeOfBasisMatrix());
 			RealVector rv = inversa.operate(
-					MatrixUtils.createRealVector(fastener.getFastenerLocation().getPunto().subtract(referencePoint).toArray()));
-			
+					MatrixUtils.createRealVector(fastener.getFastenerLocation().getPunto().subtract(lc.getBgResult().getReferencePoint()).toArray()));
+			referenceFastenerList.add(fastener);
 			System.out.println(rv.toString());
 		}
-		
+		lc.getBgResult().setReferenceFasteners(referenceFastenerList);
 	}
 
-	private void setReferencePoint(BoltGroupLoadCase lc, BoltGroupResult bgresult) {
-		bgresult.setReferencePoint(boltsPlane.project((Point)lc.getLoadCasePoint().getPunto()));
-		System.out.println("EL PUNTO SOBREE EL PLANO:\t" +bgresult.getReferencePoint().toString());
-		
+	private void setReferencePoint(BoltGroupLoadCase lc) {
+		lc.getBgResult().setReferencePoint(boltsPlane.project((Point<Euclidean3D>)lc.getLoadCasePoint().getPunto()));
+		System.out.println("EL PUNTO SOBREE EL PLANO:\t" +lc.getBgResult().getReferencePoint());
 	}
 
 	public RealMatrix getChangeOfBasisMatrix() {
@@ -191,6 +181,14 @@ public class BoltGroupAnalysis {
 
 	public void setChangeOfBasisMatrix(RealMatrix changeOfBasisMatrix) {
 		this.changeOfBasisMatrix = changeOfBasisMatrix;
+	}
+
+	public List<BoltGroupResult> getBgResults() {
+		return bgResults;
+	}
+
+	public void setBgResults(List<BoltGroupResult> bgResults) {
+		this.bgResults = bgResults;
 	}
 
 

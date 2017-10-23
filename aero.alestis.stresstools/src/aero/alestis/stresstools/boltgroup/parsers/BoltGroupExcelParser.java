@@ -53,12 +53,14 @@ public class BoltGroupExcelParser {
 			Row row = rowIterator.next();		
 			if (    row.getCell(0).getCellType() == Cell.CELL_TYPE_STRING && 
 					row.getCell(1).getCellType() == Cell.CELL_TYPE_NUMERIC && 
-					row.getCell(2).getCellType() == Cell.CELL_TYPE_NUMERIC) {
+					row.getCell(2).getCellType() == Cell.CELL_TYPE_NUMERIC &&
+					row.getCell(3).getCellType() == Cell.CELL_TYPE_NUMERIC) {
 				if(!materialsFromExcel.containsKey(row.getCell(0).getStringCellValue())) {
 					materialsFromExcel.put(row.getCell(0).getStringCellValue(), 
 							new FastenerMaterial(row.getCell(0).getStringCellValue(), 
 									             row.getCell(1).getNumericCellValue(),
-									             row.getCell(2).getNumericCellValue()));
+									             row.getCell(2).getNumericCellValue(),
+									             row.getCell(3).getNumericCellValue()));
 					System.out.println("MATERIAL PARA EL MAP");
 
 				}
@@ -82,6 +84,7 @@ public class BoltGroupExcelParser {
 		PuntualForce loadcase;
 		//List<PuntualForce> listOfForces = new ArrayList<PuntualForce>();
 		List<BoltGroupLoadCase> listOfLoadCases = new ArrayList<BoltGroupLoadCase>();
+		
 		BoltGroupLoadCase bglc;
 		GeneralPoint point = new GeneralPoint();
 		//BoltGroupLoadCase bglc = new BoltGroupLoadCase();

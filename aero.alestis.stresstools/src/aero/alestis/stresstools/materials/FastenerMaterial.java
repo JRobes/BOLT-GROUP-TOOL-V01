@@ -2,10 +2,11 @@ package aero.alestis.stresstools.materials;
 
 public class FastenerMaterial extends MetallicMaterial implements IFastenerMaterial {
 	private Double fastenerDiameter;
-	public FastenerMaterial(String materialID, Double Ftuall, Double Fsuall) {
+	public FastenerMaterial(String materialID, Double Ftuall, Double Fsuall, Double fastDiameter) {
 		super.setFsall(Fsuall);
 		super.setFtall(Ftuall);
 		super.materialID = materialID;
+		fastenerDiameter = fastDiameter;
 	}
 
 	@Override
@@ -15,7 +16,6 @@ public class FastenerMaterial extends MetallicMaterial implements IFastenerMater
 
 	@Override
 	public Double getMaterialDiameter() {
-		// TODO Auto-generated method stub
 		return fastenerDiameter;
 	}
 
