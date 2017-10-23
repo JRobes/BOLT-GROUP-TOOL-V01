@@ -1,15 +1,16 @@
 package aero.alestis.stresstools.boltgroup;
 
-import aero.alestis.stresstools.general.GeneralPoint;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+
 import aero.alestis.stresstools.loadcases.LoadCase;
 import aero.alestis.stresstools.loadcases.PuntualForce;
 
 public class BoltGroupLoadCase extends LoadCase {
 	private String bgLoadCaseID;
-	private GeneralPoint loadCasePoint;
+	private Vector3D loadCasePoint;
 	private PuntualForce loadCaseForce;
 	private BoltGroupResult bgResult;
-	public BoltGroupLoadCase(String BGLoadCaseID, GeneralPoint loadCasePoint, PuntualForce loadCaseForce) {
+	public BoltGroupLoadCase(String BGLoadCaseID, Vector3D loadCasePoint, PuntualForce loadCaseForce) {
 		this.setBgLoadCaseID(BGLoadCaseID);
 		this.setLoadCasePoint(loadCasePoint);
 		this.setLoadCaseForce(loadCaseForce);
@@ -20,10 +21,10 @@ public class BoltGroupLoadCase extends LoadCase {
 	public void setBgLoadCaseID(String bgLoadCaseID) {
 		this.bgLoadCaseID = bgLoadCaseID;
 	}
-	public GeneralPoint getLoadCasePoint() {
+	public Vector3D getLoadCasePoint() {
 		return loadCasePoint;
 	}
-	public void setLoadCasePoint(GeneralPoint loadCasePoint) {
+	public void setLoadCasePoint(Vector3D loadCasePoint) {
 		this.loadCasePoint = loadCasePoint;
 	}
 	public PuntualForce getLoadCaseForce() {

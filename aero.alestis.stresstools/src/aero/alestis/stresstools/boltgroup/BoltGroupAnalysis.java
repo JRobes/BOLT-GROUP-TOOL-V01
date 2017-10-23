@@ -109,24 +109,24 @@ public class BoltGroupAnalysis {
 		double[][] matriz = new double[4][4];
 		for(int i = 0 ; i < listOfFasteners.size(); i++) {
 			System.out.println("FFFFFFFFFFFF");
-    	    System.out.println(listOfFasteners.get(i).getFastenerLocation().getPunto());
+    	    System.out.println(listOfFasteners.get(i).getFastenerCords());
 
 		}
 		if(listOfFasteners.size() == 3) {
-			return new Plane(listOfFasteners.get(0).getFastenerLocation().getPunto(),listOfFasteners.get(1).getFastenerLocation().getPunto(),listOfFasteners.get(2).getFastenerLocation().getPunto(),0.001);
+			return new Plane(listOfFasteners.get(0).getFastenerCords(),listOfFasteners.get(1).getFastenerCords(),listOfFasteners.get(2).getFastenerCords(),0.001);
 		}
     	for(int i = 0; i <= listOfFasteners.size()-4; i++) {
             for(int j = i+1; j <= listOfFasteners.size()-3;j++) {
                 for(int k = j+1; k <=listOfFasteners.size()-2; k++) {
                 	for(int p = k+1; p <= listOfFasteners.size()-1; p++) {
                 	    System.out.println(i+"\t"+j+"\t"+k+"\t"+p);
-                	    punto_1 = Arrays.copyOf(listOfFasteners.get(i).getFastenerLocation().getPunto().toArray(), listOfFasteners.get(i).getFastenerLocation().getPunto().toArray().length+1);
+                	    punto_1 = Arrays.copyOf(listOfFasteners.get(i).getFastenerCords().toArray(), listOfFasteners.get(i).getFastenerCords().toArray().length+1);
                 	    punto_1[3] = 1.;
-                	    punto_2 = Arrays.copyOf(listOfFasteners.get(j).getFastenerLocation().getPunto().toArray(), listOfFasteners.get(j).getFastenerLocation().getPunto().toArray().length+1);
+                	    punto_2 = Arrays.copyOf(listOfFasteners.get(j).getFastenerCords().toArray(), listOfFasteners.get(j).getFastenerCords().toArray().length+1);
                 	    punto_2[3] = 1.;
-                	    punto_3 = Arrays.copyOf(listOfFasteners.get(k).getFastenerLocation().getPunto().toArray(), listOfFasteners.get(k).getFastenerLocation().getPunto().toArray().length+1);
+                	    punto_3 = Arrays.copyOf(listOfFasteners.get(k).getFastenerCords().toArray(), listOfFasteners.get(k).getFastenerCords().toArray().length+1);
                 	    punto_3[3] = 1.;
-                	    punto_4 = Arrays.copyOf(listOfFasteners.get(p).getFastenerLocation().getPunto().toArray(), listOfFasteners.get(p).getFastenerLocation().getPunto().toArray().length+1);
+                	    punto_4 = Arrays.copyOf(listOfFasteners.get(p).getFastenerCords().toArray(), listOfFasteners.get(p).getFastenerCords().toArray().length+1);
                 	    punto_4[3] = 1.;
                 	    matriz[0] = punto_1;
                 	    matriz[1] = punto_2;
@@ -134,9 +134,9 @@ public class BoltGroupAnalysis {
                 	    matriz[3] = punto_4;
                 	    Array2DRowRealMatrix laMatriz = new Array2DRowRealMatrix(matriz);
                 	    LUDecomposition LUDmatriz = new LUDecomposition(laMatriz);
-                	    System.out.println(listOfFasteners.get(0).getFastenerLocation().getPunto());
-                	    System.out.println(listOfFasteners.get(1).getFastenerLocation().getPunto());
-                	    System.out.println(listOfFasteners.get(2).getFastenerLocation().getPunto());
+                	    System.out.println(listOfFasteners.get(0).getFastenerCords());
+                	    System.out.println(listOfFasteners.get(1).getFastenerCords());
+                	    System.out.println(listOfFasteners.get(2).getFastenerCords());
                 	    System.out.println("El determinante\t" + LUDmatriz.getDeterminant());
                 	    if(Math.abs(LUDmatriz.getDeterminant()) > TOLERANCIA_PLANO) {
                 	    	throw new BoltGroupPlaneException("Estos 4 puntos no son coplanares\t"+i+"\t"+j+"\t"+k+"\t"+p );
@@ -148,7 +148,7 @@ public class BoltGroupAnalysis {
             }
         }
         
-		return new Plane(listOfFasteners.get(0).getFastenerLocation().getPunto(), listOfFasteners.get(1).getFastenerLocation().getPunto(), listOfFasteners.get(2).getFastenerLocation().getPunto(),0.001);
+		return new Plane(listOfFasteners.get(0).getFastenerCords(), listOfFasteners.get(1).getFastenerCords(), listOfFasteners.get(2).getFastenerCords(),0.001);
 	}
 	public void analyze() {
 		System.out.println("NUMERO DE CASOS DE CARGA:\t" +bgLoadCases.size());
@@ -163,7 +163,7 @@ public class BoltGroupAnalysis {
 		for( Fastener fastener: this.getFastenerGeometry() ) {
 			RealMatrix inversa = MatrixUtils.inverse(getChangeOfBasisMatrix());
 			RealVector rv = inversa.operate(
-					MatrixUtils.createRealVector(fastener.getFastenerLocation().getPunto().subtract(lc.getBgResult().getReferencePoint()).toArray()));
+					MatrixUtils.createRealVector(fastener.getFastenerCords().subtract(lc.getBgResult().getReferencePoint()).toArray()));
 			referenceFastenerList.add(fastener);
 			System.out.println(rv.toString());
 		}
@@ -171,7 +171,7 @@ public class BoltGroupAnalysis {
 	}
 
 	private void setReferencePoint(BoltGroupLoadCase lc) {
-		lc.getBgResult().setReferencePoint(boltsPlane.project((Point<Euclidean3D>)lc.getLoadCasePoint().getPunto()));
+		lc.getBgResult().setReferencePoint(boltsPlane.project((Point<Euclidean3D>)lc.getLoadCasePoint()));
 		System.out.println("EL PUNTO SOBREE EL PLANO:\t" +lc.getBgResult().getReferencePoint());
 	}
 

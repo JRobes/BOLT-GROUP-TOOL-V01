@@ -18,7 +18,6 @@ import org.apache.poi.ss.usermodel.Row;
 import aero.alestis.stresstools.boltgroup.BoltGroupAnalysis;
 import aero.alestis.stresstools.boltgroup.BoltGroupLoadCase;
 import aero.alestis.stresstools.general.Fastener;
-import aero.alestis.stresstools.general.GeneralPoint;
 import aero.alestis.stresstools.loadcases.PuntualForce;
 import aero.alestis.stresstools.loadcases.PuntualLoad;
 import aero.alestis.stresstools.materials.FastenerMaterial;
@@ -86,7 +85,6 @@ public class BoltGroupExcelParser {
 		List<BoltGroupLoadCase> listOfLoadCases = new ArrayList<BoltGroupLoadCase>();
 		
 		BoltGroupLoadCase bglc;
-		GeneralPoint point = new GeneralPoint();
 		//BoltGroupLoadCase bglc = new BoltGroupLoadCase();
 
 		
@@ -105,18 +103,16 @@ public class BoltGroupExcelParser {
 					row.getCell(8).getCellType() == Cell.CELL_TYPE_NUMERIC &&
 					row.getCell(9).getCellType() == Cell.CELL_TYPE_NUMERIC) {
 				
-				point.setPunto(new Vector3D(row.getCell(1).getNumericCellValue(), 
-											row.getCell(2).getNumericCellValue(), 
-											row.getCell(3).getNumericCellValue()));
-				
-				
 				bglc = new BoltGroupLoadCase(row.getCell(0).getStringCellValue(),
-						point ,new PuntualForce(null, row.getCell(4).getNumericCellValue(),
-								                      row.getCell(5).getNumericCellValue(),
-								                      row.getCell(6).getNumericCellValue(),
-								                      row.getCell(7).getNumericCellValue(),
-								                      row.getCell(8).getNumericCellValue(),
-								                      row.getCell(9).getNumericCellValue()));
+						new Vector3D(row.getCell(1).getNumericCellValue(), 
+											row.getCell(2).getNumericCellValue(), 
+											row.getCell(3).getNumericCellValue()),
+						new PuntualForce(null, row.getCell(4).getNumericCellValue(),
+								            row.getCell(5).getNumericCellValue(),
+								            row.getCell(6).getNumericCellValue(),
+								            row.getCell(7).getNumericCellValue(),
+								            row.getCell(8).getNumericCellValue(),
+								            row.getCell(9).getNumericCellValue()));
 				
 				
 				
@@ -143,7 +139,6 @@ public class BoltGroupExcelParser {
 		rowIterator.next(); 
 		List<Fastener> fastenerList =new ArrayList<Fastener>();
 		while(rowIterator.hasNext()) {
-			GeneralPoint point = new GeneralPoint();
 			Fastener fastener = new Fastener();
 			Row row = rowIterator.next();			
 			
@@ -157,14 +152,12 @@ public class BoltGroupExcelParser {
 				//point.setPointID("ddddd");
 				//point.setPointID(row.getCell(0).getStringCellValue());
 				//fastener.set
-				point.setPointID(row.getCell(0).getStringCellValue());
-				point.setPunto(new Vector3D(row.getCell(1).getNumericCellValue(),
+				fastener.setFastenerID(row.getCell(0).getStringCellValue());
+								
+				fastener.setFastenerCords(new Vector3D(row.getCell(1).getNumericCellValue(),
 						                    row.getCell(2).getNumericCellValue(),
 						                    row.getCell(3).getNumericCellValue()));
-				
-				fastener.setFastenerLocation(point);
 				fastener.setFastenerType(row.getCell(4).getStringCellValue());
-				System.out.println("PUNTO.."+point.getPunto());
 				fastenerList.add(fastener);
 				
 			}
@@ -177,7 +170,7 @@ public class BoltGroupExcelParser {
 		//file.close();
 		for(int i = 0 ; i < fastenerList.size(); i++) {
 			System.out.println("AL pricipio...");
-    	    System.out.println(fastenerList.get(i).getFastenerLocation().getPunto());
+    	    System.out.println(fastenerList.get(i).getFastenerCords());
 
 		}
 		

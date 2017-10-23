@@ -5,9 +5,9 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 public class Fastener {
 	private String fastenerID;
 	private String FastenerType;
-	private GeneralPoint fastenerLocation;
+	//private GeneralPoint fastenerLocation;
 	private Vector3D fastenerCords;
-	public Fastener(String fastID, GeneralPoint coords, String fastType ) {
+	public Fastener(String fastID, Vector3D coords, String fastType ) {
 		
 	}
 	
@@ -15,14 +15,6 @@ public class Fastener {
 		// TODO Auto-generated constructor stub
 	}
 
-	public GeneralPoint getFastenerLocation() {
-		
-		return fastenerLocation;
-	}
-	public void setFastenerLocation(GeneralPoint fastenerLocation) {
-		
-		this.fastenerLocation = fastenerLocation;
-	}
 	public void setFastenerType(String fastenerType) {
 		
 		this.FastenerType = fastenerType;

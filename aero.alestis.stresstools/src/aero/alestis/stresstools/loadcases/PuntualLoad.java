@@ -1,11 +1,12 @@
 package aero.alestis.stresstools.loadcases;
 
-import aero.alestis.stresstools.general.GeneralPoint;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+
 
 public class PuntualLoad extends Load {
 	
 	private String LoadCaseID;
-	private GeneralPoint loadApplicationPoint;
+	private Vector3D loadApplicationPoint;
 	private PuntualForce puntualForce;
 	
 	@Override
@@ -13,11 +14,11 @@ public class PuntualLoad extends Load {
 		return LoadType.PUNTUAL_LOAD;
 	}
     
-	public GeneralPoint getLoadApplicationPoint() {
+	public Vector3D getLoadApplicationPoint() {
 		return loadApplicationPoint;
 	}
 
-	public void setLoadApplicationPoint(GeneralPoint loadApplicationPoint) {
+	public void setLoadApplicationPoint(Vector3D loadApplicationPoint) {
 		this.loadApplicationPoint = loadApplicationPoint;
 	}
 
