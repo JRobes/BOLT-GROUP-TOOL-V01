@@ -155,9 +155,18 @@ public class BoltGroupAnalysis {
 		for(BoltGroupLoadCase lc :bgLoadCases) {
 			setReferencePoint(lc);
 			setReferenceFasteners(lc);
+			setShearCentroidPoint(lc);
 		}
 	}
 	
+	private void setShearCentroidPoint(BoltGroupLoadCase lc) {
+		System.out.println("setShearCentroidPoint...");
+		for(Fastener fast: lc.getBgResult().getReferenceFasteners()) {
+			IFastenerMaterial fastMat = materialsMap.get(fast.getFastenerType());
+			System.out.println("Admisible shear:\t"+fastMat.getFsall());
+		}
+	}
+
 	private void setReferenceFasteners(BoltGroupLoadCase lc) {
 		List<Fastener> referenceFastenerList = new ArrayList<Fastener>();
 		for( Fastener fastener: this.getFastenerGeometry() ) {
