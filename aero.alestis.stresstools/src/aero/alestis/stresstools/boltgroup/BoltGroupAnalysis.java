@@ -162,6 +162,7 @@ public class BoltGroupAnalysis {
 	private void setShearCentroidPoint(BoltGroupLoadCase lc) {
 		System.out.println("setShearCentroidPoint...");
 		for(Fastener fast: lc.getBgResult().getReferenceFasteners()) {
+			
 			IFastenerMaterial fastMat = materialsMap.get(fast.getFastenerType());
 			System.out.println("Admisible shear:\t"+fastMat.getFsall());
 		}
