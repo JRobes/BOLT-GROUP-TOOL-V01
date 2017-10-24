@@ -12,7 +12,7 @@ public class BoltGroupResult {
 	private String loadCaseID;
 	private Vector3D aplicationPoint;
 	private static Vector3D referencePoint;
-	private List<Fastener> referenceFasteners = new ArrayList<Fastener>();
+	static private List<Fastener> referenceFasteners = new ArrayList<Fastener>();
 	private Vector3D shearCentroidPoint;
 	
 	public BoltGroupResult(String loadCaseID) {

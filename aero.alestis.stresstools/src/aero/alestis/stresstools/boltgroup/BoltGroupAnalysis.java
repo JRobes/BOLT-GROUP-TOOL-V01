@@ -154,7 +154,7 @@ public class BoltGroupAnalysis {
 		System.out.println("NUMERO DE CASOS DE CARGA:\t" +bgLoadCases.size());
 		for(BoltGroupLoadCase lc :bgLoadCases) {
 			setReferencePoint(lc);
-			setReferenceFasteners(lc);
+			setTheReferenceFastenerList(lc);
 			setShearCentroidPoint(lc);
 		}
 	}
@@ -167,16 +167,17 @@ public class BoltGroupAnalysis {
 		}
 	}
 
-	private void setReferenceFasteners(BoltGroupLoadCase lc) {
+	private void setTheReferenceFastenerList(BoltGroupLoadCase lc) {
 		List<Fastener> referenceFastenerList = new ArrayList<Fastener>();
 		for( Fastener fastener: this.getFastenerGeometry() ) {
 			RealMatrix inversa = MatrixUtils.inverse(getChangeOfBasisMatrix());
 			RealVector rv = inversa.operate(
 					MatrixUtils.createRealVector(fastener.getFastenerCords().subtract(lc.getBgResult().getReferencePoint()).toArray()));
 			referenceFastenerList.add(fastener);
-			System.out.println(rv.toString());
+			System.out.println("El vector Real será el fastener en el plano:\t"+rv.toString());
 		}
 		lc.getBgResult().setReferenceFasteners(referenceFastenerList);
+		System.out.println("NUMERO de fasteners en referece:\t"+ lc.getBgResult().getReferenceFasteners().size());
 	}
 
 	private void setReferencePoint(BoltGroupLoadCase lc) {
