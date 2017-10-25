@@ -28,14 +28,11 @@ public class BoltGroupResult {
 		this.aplicationPoint = aaplicationPoint;
 	}
 	public Vector3D getReferencePoint() {
-		System.out.println("vector en get reference ***********************:   "+referencePoint.toString());
-
 		return referencePoint;
 	}
 	public void setReferencePoint(Point point) {
 		this.referencePoint = (Vector3D)point;
-		System.out.println("punto ***********************:   "+point.toString());
-		System.out.println("vector ***********************:   "+referencePoint.toString());
+
 
 	}
 	public List<Fastener> getReferenceFasteners() {

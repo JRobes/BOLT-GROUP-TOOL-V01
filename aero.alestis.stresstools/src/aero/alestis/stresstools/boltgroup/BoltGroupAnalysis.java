@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.math3.geometry.Point;
 import org.apache.commons.math3.geometry.euclidean.threed.Euclidean3D;
 import org.apache.commons.math3.geometry.euclidean.threed.Plane;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
@@ -68,34 +69,7 @@ public class BoltGroupAnalysis {
     	//laMatriz.transpose();
 
         System.out.println("LA MATRIZ DE CAMBIO DE BASE ES ==============\t"+ this.getChangeOfBasisMatrix());
-    	/*
-        //laMatriz.operate();
-    	double [] vector = {
-    			getFastenerGeometry().get(0).getFastenerLocation().getPunto().getX(),
-    			getFastenerGeometry().get(0).getFastenerLocation().getPunto().getY(),
-    			getFastenerGeometry().get(0).getFastenerLocation().getPunto().getZ()};
-    	double[] rv = laMatriz.operate(vector);
-    	System.out.println(rv[0]);
-    	System.out.println(rv[1]);
-    	System.out.println(rv[2]);
-    	double [] vector1 = {
-    			getFastenerGeometry().get(1).getFastenerLocation().getPunto().getX(),
-    			getFastenerGeometry().get(1).getFastenerLocation().getPunto().getY(),
-    			getFastenerGeometry().get(1).getFastenerLocation().getPunto().getZ()};
-    	double[] rv1 = laMatriz.operate(vector1);
-    	System.out.println(rv1[0]);
-    	System.out.println(rv1[1]);
-    	System.out.println(rv1[2]);
-    	double [] vector2 = {
-    			getFastenerGeometry().get(2).getFastenerLocation().getPunto().getX(),
-    			getFastenerGeometry().get(2).getFastenerLocation().getPunto().getY(),
-    			getFastenerGeometry().get(2).getFastenerLocation().getPunto().getZ()};
-    	double[] rv2 = laMatriz.operate(vector2);
-    	System.out.println(rv2[0]);
-    	System.out.println(rv2[1]);
-    	System.out.println(rv2[2]);
-    	
-    	*/
+ 
     }
     
     
@@ -161,24 +135,32 @@ public class BoltGroupAnalysis {
 	
 	private void setShearCentroidPoint(BoltGroupLoadCase lc) {
 		System.out.println("setShearCentroidPoint...");
+		Double numerador_y = 0.0,  denominador = 0.0;
+		Double numerador_z = 0.0;
 		for(Fastener fast: lc.getBgResult().getReferenceFasteners()) {
-			
 			IFastenerMaterial fastMat = materialsMap.get(fast.getFastenerType());
+			numerador_y += fast.getFastenerCords().getY()*fastMat.getFsall();
+			numerador_z += fast.getFastenerCords().getZ()*fastMat.getFsall();
+			denominador += fastMat.getFsall();
 			System.out.println("Admisible shear:\t"+fastMat.getFsall());
 		}
+		System.out.println("SHEAR CENTROID POINT Y:\t"+numerador_y/denominador);
+		System.out.println("SHEAR CENTROID POINT Z:\t"+numerador_z/denominador);
+
 	}
 
 	private void setTheReferenceFastenerList(BoltGroupLoadCase lc) {
 		List<Fastener> referenceFastenerList = new ArrayList<Fastener>();
+		RealMatrix inversa = MatrixUtils.inverse(getChangeOfBasisMatrix());
+
 		for( Fastener fastener: this.getFastenerGeometry() ) {
-			RealMatrix inversa = MatrixUtils.inverse(getChangeOfBasisMatrix());
-			RealVector rv = inversa.operate(
-					MatrixUtils.createRealVector(fastener.getFastenerCords().subtract(lc.getBgResult().getReferencePoint()).toArray()));
-			referenceFastenerList.add(fastener);
+			RealVector rv = inversa.operate(MatrixUtils.createRealVector(fastener.getFastenerCords().subtract(lc.getBgResult().getReferencePoint()).toArray()));
 			System.out.println("El vector Real será el fastener en el plano:\t"+rv.toString());
+			Fastener refFastener = new Fastener("Ref_"+fastener.getFastenerID(),new Vector3D(rv.toArray()),fastener.getFastenerType());
+			referenceFastenerList.add(refFastener);
 		}
 		lc.getBgResult().setReferenceFasteners(referenceFastenerList);
-		System.out.println("NUMERO de fasteners en referece:\t"+ lc.getBgResult().getReferenceFasteners().size());
+		System.out.println("NUMERO FASTENERS EN EL PLANO DE REFERENCIA:\t"+ lc.getBgResult().getReferenceFasteners().size());
 	}
 
 	private void setReferencePoint(BoltGroupLoadCase lc) {

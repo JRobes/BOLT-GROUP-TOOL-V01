@@ -8,7 +8,9 @@ public class Fastener {
 	//private GeneralPoint fastenerLocation;
 	private Vector3D fastenerCords;
 	public Fastener(String fastID, Vector3D coords, String fastType ) {
-		
+		fastenerID = fastID;
+		fastenerCords = coords;
+		FastenerType = fastType;
 	}
 	
 	public Fastener() {
