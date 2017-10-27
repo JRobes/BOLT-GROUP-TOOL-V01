@@ -17,6 +17,10 @@ public class BoltGroupResult {
 	private static Vector3D shearCentroidPoint;
 	private static PuntualForce forceAtReferencePoint;
 	private static double momentAbutPointS;
+	private static Vector3D tensionCentroidPoint;
+	private static double momentAboutPointT_Y;
+	private static double momentAboutPointT_Z;
+
 	
 	public BoltGroupResult(String loadCaseID) {
 		this.loadCaseID = loadCaseID;
@@ -62,6 +66,24 @@ public class BoltGroupResult {
 	}
 	public static void setMomentAbutPointS(double momentAbutPointS) {
 		BoltGroupResult.momentAbutPointS = momentAbutPointS;
+	}
+	public static Vector3D getTensionCentroidPoint() {
+		return tensionCentroidPoint;
+	}
+	public static void setTensionCentroidPoint(Vector3D tensionCentroidPoint) {
+		BoltGroupResult.tensionCentroidPoint = tensionCentroidPoint;
+	}
+	public static double getMomentAboutPointT_Y() {
+		return momentAboutPointT_Y;
+	}
+	public static void setMomentAboutPointT_Y(double momentAboutPointT_Y) {
+		BoltGroupResult.momentAboutPointT_Y = momentAboutPointT_Y;
+	}
+	public static double getMomentAboutPointT_Z() {
+		return momentAboutPointT_Z;
+	}
+	public static void setMomentAboutPointT_Z(double momentAboutPointT_Z) {
+		BoltGroupResult.momentAboutPointT_Z = momentAboutPointT_Z;
 	}
 
 }

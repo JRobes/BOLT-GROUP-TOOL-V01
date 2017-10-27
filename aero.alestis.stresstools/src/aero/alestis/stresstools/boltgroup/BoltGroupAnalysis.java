@@ -134,9 +134,68 @@ public class BoltGroupAnalysis {
 			moveTheForceToReferencePoint(lc);
 			momentAboutPointS(lc);
 			calculateShearForcesInFasteners(lc);
+			setTheTensionCentroidPoint(lc);
+			momentsAboutPointT(lc);
+			calculateTensionForcesInFasteners(lc);
 		}
 	}
 	
+	@SuppressWarnings("static-access")
+	private void calculateTensionForcesInFasteners(BoltGroupLoadCase lc) {
+		Double sumatorioAdmisiblesFast = 0.0,  sumatorioDenominador_2 = 0.0, sumatorioDenominador_3 = 0.0;
+		for(Fastener fast: lc.getBgResult().getReferenceFasteners()) {
+			IFastenerMaterial fastMat = materialsMap.get(fast.getFastenerType());
+			sumatorioAdmisiblesFast += fastMat.getFtall();
+			sumatorioDenominador_2 += fastMat.getFtall()*
+					(Math.pow(fast.getFastenerCords().getZ()-lc.getBgResult().getTensionCentroidPoint().getZ(), 2));
+			sumatorioDenominador_3 += fastMat.getFtall()*
+					(Math.pow(fast.getFastenerCords().getY()-lc.getBgResult().getTensionCentroidPoint().getY(), 2));
+				
+		}
+
+		/*
+		for(Fastener fast3: lc.getBgResult().getReferenceFasteners()) {
+			IFastenerMaterial fastMat2 = materialsMap.get(fast3.getFastenerType());
+			Double F1 = 0.0, F2 =0.0, F3 = 0.0;
+			F1 = lc.getBgResult().getForceAtReferencePoint().getFx()*(fastMat3.getFsall()/sumatorioAdmisiblesFast);
+			F2 = lc.getBgResult().getMomentAboutPointT_Y()*(/);
+		}
+		*/
+		
+
+		
+	}
+
+	@SuppressWarnings("static-access")
+	private void momentsAboutPointT(BoltGroupLoadCase lc) {
+		System.out.println("momentsAboutPointT...");
+		PuntualForce pf = lc.getBgResult().getForceAtReferencePoint();
+		lc.getBgResult().setMomentAboutPointT_Y(pf.getMy() - pf.getFx()*lc.getBgResult().getShearCentroidPoint().getZ());
+		lc.getBgResult().setMomentAboutPointT_Z(pf.getMz() + pf.getFx()*lc.getBgResult().getShearCentroidPoint().getY());
+
+		//System.out.println("La fuerza en el plano:  (N·mm)\t\t"+ pf.getMx()+"\t"+pf.getMy()+"\t"+pf.getMz());
+		System.out.println("Moment about T - - Y:\t"+lc.getBgResult().getMomentAboutPointT_Y());	
+		System.out.println("Moment about T - - Z:\t"+lc.getBgResult().getMomentAboutPointT_Z());		
+
+	}
+
+	@SuppressWarnings("static-access")
+	private void setTheTensionCentroidPoint(BoltGroupLoadCase lc) {
+		System.out.println("setTheTensionCentroidPoint...");
+		Double numerador_y = 0.0,  denominador = 0.0;
+		Double numerador_z = 0.0;
+		for(Fastener fast: lc.getBgResult().getReferenceFasteners()) {
+			IFastenerMaterial fastMat = materialsMap.get(fast.getFastenerType());
+			numerador_y += fast.getFastenerCords().getY()*fastMat.getFtall();
+			numerador_z += fast.getFastenerCords().getZ()*fastMat.getFtall();
+			denominador += fastMat.getFtall();
+			System.out.println("Admisible tension:\t"+fastMat.getFtall());
+		}
+		System.out.println("TENSION CENTROID POINT Y:\t"+numerador_y/denominador);
+		System.out.println("TENSION CENTROID POINT Z:\t"+numerador_z/denominador);
+		lc.getBgResult().setTensionCentroidPoint(new Vector3D(0.0,numerador_y/denominador,numerador_z/denominador));
+	}
+
 	private void calculateShearForcesInFasteners(BoltGroupLoadCase lc) {
 		Double sumatorioAdmisiblesFast = 0.0,  sumatorioDenominador = 0.0;
 		for(Fastener fast: lc.getBgResult().getReferenceFasteners()) {
@@ -161,11 +220,11 @@ public class BoltGroupAnalysis {
 		
 	}
 
+	@SuppressWarnings("static-access")
 	private void momentAboutPointS(BoltGroupLoadCase lc) {
 		System.out.println("momentAboutPointS...");
 		PuntualForce pf = lc.getBgResult().getForceAtReferencePoint();
-		lc.getBgResult();
-		BoltGroupResult.setMomentAbutPointS(pf.getMx() + pf.getFy()*lc.getBgResult().getShearCentroidPoint().getZ() -pf.getFz()*lc.getBgResult().getShearCentroidPoint().getY());
+		lc.getBgResult().setMomentAbutPointS(pf.getMx() + pf.getFy()*lc.getBgResult().getShearCentroidPoint().getZ() -pf.getFz()*lc.getBgResult().getShearCentroidPoint().getY());
 		//System.out.println("La fuerza en el plano:  (N·mm)\t\t"+ pf.getMx()+"\t"+pf.getMy()+"\t"+pf.getMz());
 		System.out.println("Moment about S:\t"+lc.getBgResult().getMomentAbutPointS());
 	}
