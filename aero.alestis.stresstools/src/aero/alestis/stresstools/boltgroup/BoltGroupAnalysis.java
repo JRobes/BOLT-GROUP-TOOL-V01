@@ -16,7 +16,9 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
 import aero.alestis.stresstools.general.Fastener;
+import aero.alestis.stresstools.loadcases.PuntualForce;
 import aero.alestis.stresstools.materials.IFastenerMaterial;
+import aero.alestis.stresstools.utils.ForceUtilities;
 
 public class BoltGroupAnalysis {
 	private Plane boltsPlane;
@@ -24,7 +26,6 @@ public class BoltGroupAnalysis {
 	private List<Fastener> fastenerGeometry;
 	private Map<String, IFastenerMaterial> materialsMap;
 	//private Vector3D referencePoint;//esto cambiarlo para cada bgresult
-	private List<BoltGroupResult> bgResults;
 	private RealMatrix changeOfBasisMatrix;
 	
 	public List<BoltGroupLoadCase> getBgLoadCases() {
@@ -130,9 +131,59 @@ public class BoltGroupAnalysis {
 			setReferencePoint(lc);
 			setTheReferenceFastenerList(lc);
 			setShearCentroidPoint(lc);
+			moveTheForceToReferencePoint(lc);
+			momentAboutPointS(lc);
+			calculateShearForcesInFasteners(lc);
 		}
 	}
 	
+	private void calculateShearForcesInFasteners(BoltGroupLoadCase lc) {
+		Double sumatorioAdmisiblesFast = 0.0,  sumatorioDenominador = 0.0;
+		for(Fastener fast: lc.getBgResult().getReferenceFasteners()) {
+			IFastenerMaterial fastMat = materialsMap.get(fast.getFastenerType());
+			sumatorioAdmisiblesFast += fastMat.getFsall();
+			sumatorioDenominador += fastMat.getFsall()*
+					(Math.pow(fast.getFastenerCords().getY()-lc.getBgResult().getShearCentroidPoint().getY(), 2)
+				    +Math.pow(fast.getFastenerCords().getZ()-lc.getBgResult().getShearCentroidPoint().getZ(), 2));
+		}
+		for(Fastener fast2: lc.getBgResult().getReferenceFasteners()) {
+			IFastenerMaterial fastMat2 = materialsMap.get(fast2.getFastenerType());
+			Double Fsi = 0.0, Fsyi = 0.0, Fszi = 0.0;
+			Fsyi = lc.getBgResult().getForceAtReferencePoint().getFy()*(fastMat2.getFsall()/sumatorioAdmisiblesFast)
+				  -lc.getBgResult().getMomentAbutPointS()*(fastMat2.getFsall()*
+						  (fast2.getFastenerCords().getZ()-lc.getBgResult().getShearCentroidPoint().getZ())/sumatorioDenominador);
+			Fszi = lc.getBgResult().getForceAtReferencePoint().getFz()*(fastMat2.getFsall()/sumatorioAdmisiblesFast)
+					  -lc.getBgResult().getMomentAbutPointS()*(fastMat2.getFsall()*
+							  (fast2.getFastenerCords().getY()-lc.getBgResult().getShearCentroidPoint().getY())/sumatorioDenominador);
+		System.out.println("SSSSSSSSSSSSSSS\t"+ Math.pow(Math.pow(Fsyi, 2)+Math.pow(Fszi, 2), 0.5));
+		}
+		
+		
+	}
+
+	private void momentAboutPointS(BoltGroupLoadCase lc) {
+		System.out.println("momentAboutPointS...");
+		PuntualForce pf = lc.getBgResult().getForceAtReferencePoint();
+		lc.getBgResult();
+		BoltGroupResult.setMomentAbutPointS(pf.getMx() + pf.getFy()*lc.getBgResult().getShearCentroidPoint().getZ() -pf.getFz()*lc.getBgResult().getShearCentroidPoint().getY());
+		//System.out.println("La fuerza en el plano:  (N·mm)\t\t"+ pf.getMx()+"\t"+pf.getMy()+"\t"+pf.getMz());
+		System.out.println("Moment about S:\t"+lc.getBgResult().getMomentAbutPointS());
+	}
+
+	private void moveTheForceToReferencePoint(BoltGroupLoadCase lc) {
+		System.out.println("moveTheForceToTheReferencePoint...");
+		PuntualForce pf = ForceUtilities.translateForce(lc.getLoadCaseForce(), lc.getLoadCasePoint(), lc.getBgResult().getReferencePoint());
+		//double jander = pf.getMx() + pf.getFy()*lc.getBgResult().getShearCentroidPoint().getZ() -pf.getFz()*lc.getBgResult().getShearCentroidPoint().getY();
+		//System.out.println("Moment about S:\t"+jander);
+		Vector3D force = new Vector3D(pf.getFx(),pf.getFy(),pf.getFz());
+		Vector3D newF = new Vector3D(changeOfBasisMatrix.operate(force.toArray()));
+		Vector3D moment = new Vector3D(pf.getMx(),pf.getMy(),pf.getMz());
+		Vector3D newM = new Vector3D(changeOfBasisMatrix.operate(moment.toArray()));
+		PuntualForce pf2 = new PuntualForce(lc.getLoadCaseID(),newF.getX(),newF.getY(),newF.getZ(),newM.getX(),newM.getY(),newM.getZ());
+		lc.getBgResult().setForceAtReferencePoint(pf2);
+
+	}
+
 	private void setShearCentroidPoint(BoltGroupLoadCase lc) {
 		System.out.println("setShearCentroidPoint...");
 		Double numerador_y = 0.0,  denominador = 0.0;
@@ -146,7 +197,7 @@ public class BoltGroupAnalysis {
 		}
 		System.out.println("SHEAR CENTROID POINT Y:\t"+numerador_y/denominador);
 		System.out.println("SHEAR CENTROID POINT Z:\t"+numerador_z/denominador);
-
+		lc.getBgResult().setShearCentroidPoint(new Vector3D(0.0,numerador_y/denominador,numerador_z/denominador));
 	}
 
 	private void setTheReferenceFastenerList(BoltGroupLoadCase lc) {
@@ -175,15 +226,6 @@ public class BoltGroupAnalysis {
 	public void setChangeOfBasisMatrix(RealMatrix changeOfBasisMatrix) {
 		this.changeOfBasisMatrix = changeOfBasisMatrix;
 	}
-
-	public List<BoltGroupResult> getBgResults() {
-		return bgResults;
-	}
-
-	public void setBgResults(List<BoltGroupResult> bgResults) {
-		this.bgResults = bgResults;
-	}
-
 
 	
 }

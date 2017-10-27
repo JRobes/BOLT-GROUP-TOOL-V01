@@ -7,13 +7,16 @@ import org.apache.commons.math3.geometry.Point;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import aero.alestis.stresstools.general.Fastener;
+import aero.alestis.stresstools.loadcases.PuntualForce;
 
 public class BoltGroupResult {
 	private String loadCaseID;
 	private Vector3D aplicationPoint;
 	private static Vector3D referencePoint;
 	static private List<Fastener> referenceFasteners = new ArrayList<Fastener>();
-	private Vector3D shearCentroidPoint;
+	private static Vector3D shearCentroidPoint;
+	private static PuntualForce forceAtReferencePoint;
+	private static double momentAbutPointS;
 	
 	public BoltGroupResult(String loadCaseID) {
 		this.loadCaseID = loadCaseID;
@@ -41,6 +44,24 @@ public class BoltGroupResult {
 	public void setReferenceFasteners(List<Fastener> referenceFasteners) {
 		System.out.println("Assigned reference fastener list...");
 		this.referenceFasteners = referenceFasteners;
+	}
+	public PuntualForce getForceAtReferencePoint() {
+		return forceAtReferencePoint;
+	}
+	public void setForceAtReferencePoint(PuntualForce forceAtReferencePoint) {
+		this.forceAtReferencePoint = forceAtReferencePoint;
+	}
+	public Vector3D getShearCentroidPoint() {
+		return shearCentroidPoint;
+	}
+	public void setShearCentroidPoint(Vector3D shearCentroidPoint) {
+		this.shearCentroidPoint = shearCentroidPoint;
+	}
+	public double getMomentAbutPointS() {
+		return momentAbutPointS;
+	}
+	public static void setMomentAbutPointS(double momentAbutPointS) {
+		BoltGroupResult.momentAbutPointS = momentAbutPointS;
 	}
 
 }

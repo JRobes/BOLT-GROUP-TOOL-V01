@@ -14,6 +14,10 @@ public class PuntualForce {
 		this.Mz = Mz;
 	}
 	
+	public PuntualForce() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public Double getFx() {
 		return Fx;
 	}
