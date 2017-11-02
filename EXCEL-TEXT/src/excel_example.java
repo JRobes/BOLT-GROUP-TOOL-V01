@@ -16,6 +16,7 @@ public class excel_example {
 	    parser = new BoltGroupExcelParser(EXCEL_FILE);
 		parser.parse(analysis);
 		try {
+			@SuppressWarnings("unused")
 			Plane plano = analysis.getFittingPlane();
 			
 		} catch (BoltGroupPlaneException e) {

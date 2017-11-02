@@ -19,7 +19,6 @@ import aero.alestis.stresstools.boltgroup.BoltGroupAnalysis;
 import aero.alestis.stresstools.boltgroup.BoltGroupLoadCase;
 import aero.alestis.stresstools.general.Fastener;
 import aero.alestis.stresstools.loadcases.PuntualForce;
-import aero.alestis.stresstools.loadcases.PuntualLoad;
 import aero.alestis.stresstools.materials.FastenerMaterial;
 import aero.alestis.stresstools.materials.IFastenerMaterial;
 
@@ -80,6 +79,7 @@ public class BoltGroupExcelParser {
 		HSSFSheet sheet = workbook.getSheet("LOAD-CASES");
 		Iterator<Row> rowIterator = sheet.iterator();
 		rowIterator.next();
+		@SuppressWarnings("unused")
 		PuntualForce loadcase;
 		//List<PuntualForce> listOfForces = new ArrayList<PuntualForce>();
 		List<BoltGroupLoadCase> listOfLoadCases = new ArrayList<BoltGroupLoadCase>();
