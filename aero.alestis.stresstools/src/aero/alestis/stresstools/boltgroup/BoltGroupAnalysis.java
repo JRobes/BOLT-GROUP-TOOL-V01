@@ -31,6 +31,8 @@ public class BoltGroupAnalysis {
 	public List<BoltGroupLoadCase> getBgLoadCases() {
 		return bgLoadCases;
 	}
+	
+	
 	 
 
 	public void setBgLoadCases(List<BoltGroupLoadCase> listOfLoadCases) {
