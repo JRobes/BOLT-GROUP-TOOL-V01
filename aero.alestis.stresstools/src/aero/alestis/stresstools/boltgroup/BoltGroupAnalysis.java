@@ -58,13 +58,14 @@ public class BoltGroupAnalysis {
     	if(fastenerGeometry.size() < 3) throw new BoltGroupPlaneException("Numero de remaches menor de 3");
     	boltsPlane = calculatePlane(fastenerGeometry);
         if(boltsPlane==null) throw new BoltGroupPlaneException("No ha sido capaz de encontrar un plano entre todos los puntos...");
+        //boltsPlane.getNormal().negate();
         System.out.println("EL PLANO\t"+ boltsPlane.getNormal().toString());
         createBaseChangeMatrix();
     	return boltsPlane;
     }
     
     public void createBaseChangeMatrix() {
-    	double[][] arrayParaMatriz = {boltsPlane.getNormal().toArray(), boltsPlane.getV().toArray(), boltsPlane.getU().toArray()};
+    	double[][] arrayParaMatriz = {boltsPlane.getNormal().negate().toArray(), boltsPlane.getV().toArray(), boltsPlane.getU().toArray()};
     	//RealMatrix laMatriz = MatrixUtils.createRealMatrix(arrayParaMatriz);
     	this.setChangeOfBasisMatrix(MatrixUtils.createRealMatrix(arrayParaMatriz));
     	//laMatriz.transpose();
