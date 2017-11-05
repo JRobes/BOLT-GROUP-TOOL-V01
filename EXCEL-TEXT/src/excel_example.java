@@ -24,9 +24,8 @@ public class excel_example {
 			e.printStackTrace();
 		}
 		
-		System.out.println(analysis.getFastenerGeometry().size());
+		//System.out.println(analysis.getFastenerGeometry().size());
 		
-		System.out.println(System.getProperty("user.dir"));
 		analysis.analyze();
 		
 	}

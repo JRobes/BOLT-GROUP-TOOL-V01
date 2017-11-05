@@ -57,12 +57,12 @@ public class BoltGroupAnalysis {
 	
 
     public Plane getFittingPlane() throws BoltGroupPlaneException{
-    	
+    	System.out.println("BoltGroupAnalysis.getFittingPlane()...");
     	if(fastenerGeometry.size() < 3) throw new BoltGroupPlaneException("Numero de remaches menor de 3");
     	boltsPlane = calculatePlane(fastenerGeometry);
         if(boltsPlane==null) throw new BoltGroupPlaneException("No ha sido capaz de encontrar un plano entre todos los puntos...");
         //boltsPlane.getNormal().negate();
-        System.out.println("EL PLANO\t"+ boltsPlane.getNormal().toString());
+        System.out.println("EL PLANO TIENE VECTOR NORMAL:\t"+ boltsPlane.getNormal().toString());
         createBaseChangeMatrix();
     	return boltsPlane;
     }
@@ -80,17 +80,13 @@ public class BoltGroupAnalysis {
     
 
 	private static Plane calculatePlane(List<Fastener> listOfFasteners) throws BoltGroupPlaneException{
+		System.out.println("calculatePlane..");
 		double TOLERANCIA_PLANO = 1;
 		double[] punto_1;
 		double[] punto_2;
 		double[] punto_3;
 		double[] punto_4;
 		double[][] matriz = new double[4][4];
-		for(int i = 0 ; i < listOfFasteners.size(); i++) {
-			System.out.println("FFFFFFFFFFFF");
-    	    System.out.println(listOfFasteners.get(i).getFastenerCords());
-
-		}
 		if(listOfFasteners.size() == 3) {
 			return new Plane(listOfFasteners.get(0).getFastenerCords(),listOfFasteners.get(1).getFastenerCords(),listOfFasteners.get(2).getFastenerCords(),0.001);
 		}
@@ -98,7 +94,7 @@ public class BoltGroupAnalysis {
             for(int j = i+1; j <= listOfFasteners.size()-3;j++) {
                 for(int k = j+1; k <=listOfFasteners.size()-2; k++) {
                 	for(int p = k+1; p <= listOfFasteners.size()-1; p++) {
-                	    System.out.println(i+"\t"+j+"\t"+k+"\t"+p);
+                	    //System.out.println(i+"\t"+j+"\t"+k+"\t"+p);
                 	    punto_1 = Arrays.copyOf(listOfFasteners.get(i).getFastenerCords().toArray(), listOfFasteners.get(i).getFastenerCords().toArray().length+1);
                 	    punto_1[3] = 1.;
                 	    punto_2 = Arrays.copyOf(listOfFasteners.get(j).getFastenerCords().toArray(), listOfFasteners.get(j).getFastenerCords().toArray().length+1);
@@ -113,10 +109,10 @@ public class BoltGroupAnalysis {
                 	    matriz[3] = punto_4;
                 	    Array2DRowRealMatrix laMatriz = new Array2DRowRealMatrix(matriz);
                 	    LUDecomposition LUDmatriz = new LUDecomposition(laMatriz);
-                	    System.out.println(listOfFasteners.get(0).getFastenerCords());
-                	    System.out.println(listOfFasteners.get(1).getFastenerCords());
-                	    System.out.println(listOfFasteners.get(2).getFastenerCords());
-                	    System.out.println("El determinante\t" + LUDmatriz.getDeterminant());
+                	    //System.out.println(listOfFasteners.get(0).getFastenerCords());
+                	   // System.out.println(listOfFasteners.get(1).getFastenerCords());
+                	   // System.out.println(listOfFasteners.get(2).getFastenerCords());
+                	    //System.out.println("El determinante\t" + LUDmatriz.getDeterminant());
                 	    if(Math.abs(LUDmatriz.getDeterminant()) > TOLERANCIA_PLANO) {
                 	    	throw new BoltGroupPlaneException("Estos 4 puntos no son coplanares\t"+i+"\t"+j+"\t"+k+"\t"+p );
                 	    }
@@ -144,7 +140,7 @@ public class BoltGroupAnalysis {
 			calculateAlpha(lc);
 			calculateTransformTheAppliedLoadToPpalAxis(lc);
 			
-			//calculateTensionForcesInFasteners(lc);
+			calculateTensionForcesInFasteners(lc);
 
 			
 		}
@@ -152,26 +148,18 @@ public class BoltGroupAnalysis {
 	
 	private void calculateTransformTheAppliedLoadToPpalAxis(BoltGroupLoadCase lc) {
 		System.out.println("calculateTransformTheAppliedLoadToPpalAxis...");
-		System.out.println("ANGULO..."+Math.toDegrees(lc.getBgResult().getAlpha()));
+		//System.out.println("ANGULO..."+Math.toDegrees(lc.getBgResult().getAlpha()));
 
 		List<Fastener> transformedFastenerList = new ArrayList<Fastener>();
 		for(Fastener fast: lc.getBgResult().getReferenceFasteners()) {
 			Fastener f = fast;
 			double yAi = fast.getFastenerCords().getY()*Math.cos(lc.getBgResult().getAlpha()) + fast.getFastenerCords().getZ()*Math.sin(lc.getBgResult().getAlpha());
 			double zAi = -fast.getFastenerCords().getY()*Math.sin(lc.getBgResult().getAlpha()) + fast.getFastenerCords().getZ()*Math.cos(lc.getBgResult().getAlpha());
+			System.out.println("yAi, zAi\t"+yAi+", "+zAi);
 			f.setFastenerCords(new Vector3D(0.0, yAi,zAi));
 			transformedFastenerList.add(f);
 			System.out.println("FASTENER TRANSFORMADO\t"+f.getFastenerCords().getY()+", "+f.getFastenerCords().getZ()+" FASTENER ORIGINAL "+fast.getFastenerCords().getY()+", "+fast.getFastenerCords().getZ());
 		}
-		Double yta, zta;
-		yta = lc.getBgResult().getTensionCentroidPoint().getY()*Math.cos(lc.getBgResult().getAlpha()) + 
-				lc.getBgResult().getTensionCentroidPoint().getZ()*Math.sin(lc.getBgResult().getAlpha());
-		System.out.println("R______________fddsdsds____R\t"+ lc.getBgResult().getTensionCentroidPoint().getY() +"sdsdsdsd"+yta);
-		zta = -lc.getBgResult().getTensionCentroidPoint().getY()*Math.sin(lc.getBgResult().getAlpha()) + 
-				lc.getBgResult().getTensionCentroidPoint().getZ()*Math.cos(lc.getBgResult().getAlpha());
-		System.out.println("R______________fddsdsds____R\t"+ lc.getBgResult().getTensionCentroidPoint().getZ() +"sdsdsdsd"+zta);
-		
-
 	}
 
 	private void calculateAlpha(BoltGroupLoadCase lc) {
@@ -206,10 +194,6 @@ public class BoltGroupAnalysis {
 	@SuppressWarnings("unused")
 	private void calculateTensionForcesInFasteners(BoltGroupLoadCase lc) {
 		System.out.println("calculateTensionForcesInFasteners...");
-		System.out.println("\tcalculateAlpha...");
-		System.out.println(Math.sin(Math.PI/2));
-		System.out.println(Math.tan(Math.PI));
-		System.out.println(Math.toDegrees(Math.atan(Math.tan(Math.PI/3))));
 		Double sumatorioAdmisiblesFast = 0.0,  sumatorioDenominador_2 = 0.0, sumatorioDenominador_3 = 0.0;
 		for(Fastener fast: lc.getBgResult().getReferenceFasteners()) {
 			IFastenerMaterial fastMat = materialsMap.get(fast.getFastenerType());
@@ -269,6 +253,7 @@ public class BoltGroupAnalysis {
 					(Math.pow(fast.getFastenerCords().getY()-lc.getBgResult().getShearCentroidPoint().getY(), 2)
 				    +Math.pow(fast.getFastenerCords().getZ()-lc.getBgResult().getShearCentroidPoint().getZ(), 2));
 		}
+		System.out.println("Sumatorio denominador\t"+ sumatorioDenominador);
 		for(Fastener fast2: lc.getBgResult().getReferenceFasteners()) {
 			IFastenerMaterial fastMat2 = materialsMap.get(fast2.getFastenerType());
 			@SuppressWarnings("unused")
@@ -277,9 +262,9 @@ public class BoltGroupAnalysis {
 				  -lc.getBgResult().getMomentAbutPointS()*(fastMat2.getFsall()*
 						  (fast2.getFastenerCords().getZ()-lc.getBgResult().getShearCentroidPoint().getZ())/sumatorioDenominador);
 			Fszi = lc.getBgResult().getForceAtReferencePoint().getFz()*(fastMat2.getFsall()/sumatorioAdmisiblesFast)
-					  -lc.getBgResult().getMomentAbutPointS()*(fastMat2.getFsall()*
+					  +lc.getBgResult().getMomentAbutPointS()*(fastMat2.getFsall()*
 							  (fast2.getFastenerCords().getY()-lc.getBgResult().getShearCentroidPoint().getY())/sumatorioDenominador);
-		System.out.println("SSSSSSSSSSSSSSS\t"+ Math.pow(Math.pow(Fsyi, 2)+Math.pow(Fszi, 2), 0.5));
+		System.out.println("Shear Force in Faterner Fsi:\t"+ Math.pow(Math.pow(Fsyi, 2)+Math.pow(Fszi, 2), 0.5));
 		}
 		
 		
@@ -301,6 +286,11 @@ public class BoltGroupAnalysis {
 		//System.out.println("Moment about S:\t"+jander);
 		Vector3D force = new Vector3D(pf.getFx(),pf.getFy(),pf.getFz());
 		Vector3D newF = new Vector3D(changeOfBasisMatrix.operate(force.toArray()));
+		//System.out.println("Fuerza X en el nuevo sistema de coord:\t"+newF.getX());
+		//System.out.println("Fuerza Y en el nuevo sistema de coord:\t"+newF.getY());
+		//System.out.println("Fuerza Z en el nuevo sistema de coord:\t"+newF.getZ());
+
+
 		Vector3D moment = new Vector3D(pf.getMx(),pf.getMy(),pf.getMz());
 		Vector3D newM = new Vector3D(changeOfBasisMatrix.operate(moment.toArray()));
 		PuntualForce pf2 = new PuntualForce(lc.getLoadCaseID(),newF.getX(),newF.getY(),newF.getZ(),newM.getX(),newM.getY(),newM.getZ());
@@ -317,10 +307,10 @@ public class BoltGroupAnalysis {
 			numerador_y += fast.getFastenerCords().getY()*fastMat.getFsall();
 			numerador_z += fast.getFastenerCords().getZ()*fastMat.getFsall();
 			denominador += fastMat.getFsall();
-			System.out.println("Admisible shear:\t"+fastMat.getFsall());
+			//System.out.println("Admisible shear:\t"+fastMat.getFsall());
 		}
-		System.out.println("SHEAR CENTROID POINT Y:\t"+numerador_y/denominador);
-		System.out.println("SHEAR CENTROID POINT Z:\t"+numerador_z/denominador);
+		System.out.println("SHEAR CENTROID POINT Y:\t"+numerador_y/denominador+"\t(en el nuevo sistema de referencia)");
+		System.out.println("SHEAR CENTROID POINT Z:\t"+numerador_z/denominador+"\t(en el nuevo sistema de referencia)");
 		lc.getBgResult().setShearCentroidPoint(new Vector3D(0.0,numerador_y/denominador,numerador_z/denominador));
 	}
 
@@ -340,7 +330,7 @@ public class BoltGroupAnalysis {
 
 	private void setReferencePoint(BoltGroupLoadCase lc) {
 		lc.getBgResult().setReferencePoint(boltsPlane.project((Point<Euclidean3D>)lc.getLoadCasePoint()));
-		System.out.println("EL PUNTO SOBREE EL PLANO:\t" +lc.getBgResult().getReferencePoint());
+		System.out.println("EL nuevo origen de coordenadas:\t" +lc.getBgResult().getReferencePoint());
 	}
 
 	public RealMatrix getChangeOfBasisMatrix() {
