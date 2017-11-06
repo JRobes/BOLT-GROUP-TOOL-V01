@@ -152,14 +152,14 @@ public class BoltGroupAnalysis {
 
 		List<Fastener> transformedFastenerList = new ArrayList<Fastener>();
 		for(Fastener fast: lc.getBgResult().getReferenceFasteners()) {
-			Fastener f = fast;
 			double yAi = fast.getFastenerCords().getY()*Math.cos(lc.getBgResult().getAlpha()) + fast.getFastenerCords().getZ()*Math.sin(lc.getBgResult().getAlpha());
 			double zAi = -fast.getFastenerCords().getY()*Math.sin(lc.getBgResult().getAlpha()) + fast.getFastenerCords().getZ()*Math.cos(lc.getBgResult().getAlpha());
 			System.out.println("yAi, zAi\t"+yAi+", "+zAi);
-			f.setFastenerCords(new Vector3D(0.0, yAi,zAi));
+			Fastener f = new Fastener(fast.getFastenerID(),new Vector3D(0.0, yAi,zAi), fast.getFastenerType());
 			transformedFastenerList.add(f);
-			System.out.println("FASTENER TRANSFORMADO\t"+f.getFastenerCords().getY()+", "+f.getFastenerCords().getZ()+" FASTENER ORIGINAL "+fast.getFastenerCords().getY()+", "+fast.getFastenerCords().getZ());
+			System.out.println("FASTENER TRANSFORMADO\t"+f.getFastenerCords().getY()+", "+f.getFastenerCords().getZ()+"\nFASTENER ORIGINAL\t"+fast.getFastenerCords().getY()+", "+fast.getFastenerCords().getZ());
 		}
+		lc.getBgResult().setTranslatedFasteners(transformedFastenerList);
 	}
 
 	private void calculateAlpha(BoltGroupLoadCase lc) {
@@ -194,22 +194,29 @@ public class BoltGroupAnalysis {
 	@SuppressWarnings("unused")
 	private void calculateTensionForcesInFasteners(BoltGroupLoadCase lc) {
 		System.out.println("calculateTensionForcesInFasteners...");
+		for(Fastener fast: lc.getBgResult().getTranslatedFasteners()) {
+			System.out.println(fast.getFastenerCords().getY());
+		}
 		Double sumatorioAdmisiblesFast = 0.0,  sumatorioDenominador_2 = 0.0, sumatorioDenominador_3 = 0.0;
-		for(Fastener fast: lc.getBgResult().getReferenceFasteners()) {
+		for(Fastener fast: lc.getBgResult().getTranslatedFasteners()) {
 			IFastenerMaterial fastMat = materialsMap.get(fast.getFastenerType());
 			sumatorioAdmisiblesFast += fastMat.getFtall();
 			sumatorioDenominador_2 += fastMat.getFtall()*
-					(Math.pow(fast.getFastenerCords().getZ()-lc.getBgResult().getTensionCentroidPoint().getZ(), 2));
+					(Math.pow(fast.getFastenerCords().getZ()-lc.getBgResult().getzTA(), 2));
 			sumatorioDenominador_3 += fastMat.getFtall()*
-					(Math.pow(fast.getFastenerCords().getY()-lc.getBgResult().getTensionCentroidPoint().getY(), 2));
+					(Math.pow(fast.getFastenerCords().getY()-lc.getBgResult().getyTA(), 2));
 			
 		}
-		for(Fastener fast2: lc.getBgResult().getReferenceFasteners()) {
+		for(Fastener fast2: lc.getBgResult().getTranslatedFasteners()) {
 			IFastenerMaterial fastMat = materialsMap.get(fast2.getFastenerType());
 			Double F1 = 0.0, F2=0.0, F3= 0.0;
-			F1 = lc.getBgResult().getForceAtReferencePoint().getFx();
-			F2 = lc.getBgResult().getMomentAboutPointT_Y()*(fastMat.getFtall()*(fast2.getFastenerCords().getZ()-lc.getBgResult().getTensionCentroidPoint().getZ())/sumatorioDenominador_2);
-			F3 = lc.getBgResult().getMomentAboutPointT_Z()*(fastMat.getFtall()*(fast2.getFastenerCords().getY()-lc.getBgResult().getTensionCentroidPoint().getY())/sumatorioDenominador_3);
+			F1 = lc.getBgResult().getForceAtReferencePoint().getFx()*fastMat.getFtall()/sumatorioAdmisiblesFast;
+			System.out.println("F1...\t"+ F1);
+
+			F2 = lc.getBgResult().getMySA()*(fastMat.getFtall()*(fast2.getFastenerCords().getZ()-lc.getBgResult().getzTA())/sumatorioDenominador_2);
+			System.out.println("F2...\t"+ F2);
+			F3 = lc.getBgResult().getMzSA()*(fastMat.getFtall()*(fast2.getFastenerCords().getY()-lc.getBgResult().getyTA())/sumatorioDenominador_3);
+			System.out.println("F3...\t"+ F3);
 			Double FT = F1+F2-F3;
 			System.out.println("Fuerza en el fastener...\t"+ FT);
 
