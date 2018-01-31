@@ -68,7 +68,7 @@ public class BoltGroupAnalysis {
     }
     
     public void createBaseChangeMatrix() {
-    	double[][] arrayParaMatriz = {boltsPlane.getNormal().negate().toArray(), boltsPlane.getV().toArray(), boltsPlane.getU().toArray()};
+    	double[][] arrayParaMatriz = {boltsPlane.getNormal().negate().toArray(),boltsPlane.getV().toArray(), boltsPlane.getU().toArray()};
     	//RealMatrix laMatriz = MatrixUtils.createRealMatrix(arrayParaMatriz);
     	this.setChangeOfBasisMatrix(MatrixUtils.createRealMatrix(arrayParaMatriz));
     	//laMatriz.transpose();
@@ -191,7 +191,6 @@ public class BoltGroupAnalysis {
 		System.out.println("MzSA...\t"+lc.getBgResult().getMzSA());
 	}
 
-	@SuppressWarnings("unused")
 	private void calculateTensionForcesInFasteners(BoltGroupLoadCase lc) {
 		System.out.println("calculateTensionForcesInFasteners...");
 		for(Fastener fast: lc.getBgResult().getTranslatedFasteners()) {
