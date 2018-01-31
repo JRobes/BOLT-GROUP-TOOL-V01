@@ -6,7 +6,41 @@ public final class ManageTextLine {
 		// TODO Auto-generated constructor stub
 	}
 
-	
+	/**
+	 * @param doubleToConvert
+	 */
+	public static String doubleToNastranField8(double doubleToConvert) {
+		String str1 = Double.toString(doubleToConvert);
+		//System.out.println("str1\t" + str1);
+		if(str1.contains("E")) {
+			String[] splitted;
+			//System.out.println("EEEE");
+			splitted = str1.split("E");
+			if(splitted[1].startsWith("-")) {
+				int aa = splitted[1].length();
+				return splitted[0].substring(0,8-aa).concat(splitted[1]);
+			}
+			else {
+				if(splitted[1].startsWith("+")){
+					int bb = splitted[1].length();
+					return splitted[0].substring(0,8-bb).concat(splitted[1]);
+				}
+				else {
+					int cc = splitted[1].length();
+					return splitted[0].substring(0,8-cc-1).concat("+").concat(splitted[1]);
+				}
+			}
+		}
+		else {
+			if(str1.length() < 9) {
+				return str1.substring(0,str1.length());
+			}
+			else {
+				return str1.substring(0, 8);
+			}
+		}
+		
+	}
 	public static String fillWithUpTo80Blancks(String string){
 		
 		if (string.length()<80){
